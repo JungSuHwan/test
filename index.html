@@ -2,20 +2,31 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>온도 모니터링</title>
-    <link rel="stylesheet" href="style.css">
+    <title>시스템 모니터링</title> <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>현재 온도</h1>
-        <div id="temperature">대기 중...</div>
-        <div class="unit">°C</div>
+        <h1>시스템 현황</h1> <div class="monitor-section">
+            <div id="temperature">대기 중...</div>
+            <div class="unit">°C (온도)</div>
+        </div>
+
+        <div class="stats-row" style="display: flex; justify-content: space-around; margin-top: 20px;">
+            <div class="stat-item">
+                <h3>CPU</h3>
+                <div id="cpu-usage" style="font-size: 2rem; font-weight: bold;">0%</div>
+            </div>
+            <div class="stat-item">
+                <h3>RAM</h3>
+                <div id="ram-usage" style="font-size: 2rem; font-weight: bold;">0%</div>
+            </div>
+        </div>
 
         <div class="clock-section">
             <button id="clock-btn">시간 확인하기</button>
             <div id="clock-display" class="hidden"></div>
         </div>
-        </div>
+    </div>
     <script src="renderer.js"></script>
 </body>
 </html>

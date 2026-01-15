@@ -1,17 +1,24 @@
 // renderer.js
 const tempElement = document.getElementById('temperature');
+const cpuElement = document.getElementById('cpu-usage');
+const ramElement = document.getElementById('ram-usage');
 
 // preload.js에서 정의한 'electronAPI'를 통해 데이터를 받음
-window.electronAPI.onUpdateSensor((value) => {
-    tempElement.innerText = value;
+window.electronAPI.onUpdateSensor((data) => {
+
+    const { temp, cpu, ram } = data;
+
+    tempElement.innerText = temp;
+    cpuElement.innerText = `${cpu}%`;
+    ramElement.innerText = `${ram}%`;
     
     // 온도에 따라 색상 및 배경 변경 효과
-    if (value > 28) {
+    if (temp > 28) {
         tempElement.style.color = '#ff4757';
         tempElement.style.background = 'rgba(255, 71, 87, 0.2)';
         tempElement.style.borderColor = '#ff4757';
         tempElement.style.textShadow = '0 0 10px rgba(255, 71, 87, 0.5)';
-    } else if (value > 22) {
+    } else if (temp > 22) {
         tempElement.style.color = '#ffa502';
         tempElement.style.background = 'rgba(255, 165, 2, 0.2)';
         tempElement.style.borderColor = '#ffa502';
