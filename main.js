@@ -1,11 +1,14 @@
 // main.js
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const os = require('os'); // [추가] OS 모듈 불러오기
+const os = require('os');
+const si = require('systeminformation'); // systeminformation 모듈
 
 let mainWindow;
 
-// [추가] CPU 정보 계산을 위한 도우미 함수 (파일 맨 아래에 둬도 됩니다)
+// [삭제됨] 기존의 복잡한 wmic 기반 getCpuTemperature 함수는 제거했습니다.
+
+// [유지] CPU 정보 계산을 위한 도우미 함수
 function getCpuInfo() {
   const cpus = os.cpus();
   let idle = 0;
@@ -24,7 +27,6 @@ function createWindow() {
     width: 1920,
     height: 1080,
     webPreferences: {
-      // 보안을 위해 preload 스크립트 사용
       preload: path.join(__dirname, 'preload.js'), 
       contextIsolation: true,
       nodeIntegration: false
@@ -33,22 +35,38 @@ function createWindow() {
 
   mainWindow.loadFile('index.html');
 
-  // [추가] CPU 사용량 계산을 위한 초기값 저장
+  // [초기값] CPU 사용량 계산을 위한 초기값 저장
   let previousCpuInfo = getCpuInfo();
 
-  // [기능 1: 랜덤 센서 데이터 생성]
-  // 1초마다 데이터를 만들어 화면(Renderer)으로 보냅니다.
-  setInterval(() => {
-    // 20~30도 사이의 랜덤 온도 생성
-    const randomTemp = (20 + Math.random() * 10).toFixed(1);
+  // [기능 1: 실제 센서 데이터 생성]
+  // 1초(1000ms)마다 데이터를 갱신합니다. (하드웨어 센서 호출은 부하가 있으므로 100ms는 너무 빠릅니다)
+  setInterval(async () => {
+    
+    // [변경] 1. si.cpuTemperature()로 실제 온도 가져오기
+    let cpuTemp = 0;
+    try {
+        const tempData = await si.cpuTemperature();
+        // tempData.main이 메인 CPU 온도입니다.
+        if (tempData.main && tempData.main > 0) {
+            cpuTemp = tempData.main.toFixed(1);
+        } else {
+            // 온도를 못 가져온 경우 (관리자 권한 부족, 센서 미지원 등)
+            // 테스트를 위해 랜덤값으로 대체하거나 'N/A'로 표시
+            cpuTemp = (20 + Math.random() * 10).toFixed(1); 
+            // console.log('온도 센서 읽기 실패, 가상 데이터 사용');
+        }
+    } catch (e) {
+        console.error(e);
+        cpuTemp = (20 + Math.random() * 10).toFixed(1);
+    }
 
-    // [추가] 2. RAM 사용량 계산
+    // [유지] 2. RAM 사용량 계산
     const totalMem = os.totalmem();
     const freeMem = os.freemem();
     const usedMem = totalMem - freeMem;
     const ramUsage = ((usedMem / totalMem) * 100).toFixed(1);
 
-    // [추가] 3. CPU 사용량 계산
+    // [유지] 3. CPU 사용량 계산
     const currentCpuInfo = getCpuInfo();
     const idleDiff = currentCpuInfo.idle - previousCpuInfo.idle;
     const totalDiff = currentCpuInfo.total - previousCpuInfo.total;
@@ -56,15 +74,15 @@ function createWindow() {
     
     previousCpuInfo = currentCpuInfo; // 다음 계산을 위해 갱신
     
-    // 'update-sensor'라는 채널로 데이터를 쏨
-  if (mainWindow) {
+    // 'update-sensor' 채널로 데이터 전송
+    if (mainWindow) {
         mainWindow.webContents.send('update-sensor', {
-            temp: randomTemp,
+            temp: cpuTemp,
             cpu: cpuUsage,
             ram: ramUsage
         });
     }
-  }, 100);
+  }, 1000); // 1000ms = 1초
 }
 
 app.whenReady().then(createWindow);

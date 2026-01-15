@@ -1,7 +1,7 @@
 {
   "name": "sensor-monitor-app",
   "version": "1.0.0",
-  "description": "실시간 온도 모니터링 프로그램",  
+  "description": "실시간 온도 모니터링 프로그램",
   "author": "Jung Su Hwan",
   "main": "main.js",
   "scripts": {
@@ -21,6 +21,7 @@
     "electron": "39.2.7"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
+    "electron-squirrel-startup": "^1.0.1",
+    "systeminformation": "^5.30.3"
   }
 }
