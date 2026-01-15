@@ -30,6 +30,7 @@ h1 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
     font-weight: 300;
+    color: blue;
 }
 
 p {
@@ -78,4 +79,48 @@ p {
     font-weight: 300;
     opacity: 0.9;
     margin-top: -1rem;
+}
+
+
+/* style.css 맨 아래에 추가 */
+
+/* 시계 영역 간격 */
+.clock-section {
+    margin-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2); /* 구분선 */
+    padding-top: 1.5rem;
+}
+
+/* 버튼 스타일 */
+#clock-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    color: white;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+#clock-btn:hover {
+    background: white;
+    color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* 시계 숫자 스타일 */
+#clock-display {
+    margin-top: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* 숨김 처리용 클래스 */
+.hidden {
+    display: none;
 }
