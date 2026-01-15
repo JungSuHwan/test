@@ -29,7 +29,7 @@ function createWindow() {
         mainWindow.webContents.send('update-sensor', randomTemp);
         console.log(`센서 데이터 생성됨: ${randomTemp}`); // 터미널 확인용
     }
-  }, 1000);
+  }, 100);
 }
 
 app.whenReady().then(createWindow);
